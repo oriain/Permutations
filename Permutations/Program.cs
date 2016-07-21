@@ -10,20 +10,50 @@ namespace Permutations
             Console.WriteLine("Source: {0}", String.Join(", ", array));
 
             int[] mask = {1, 2, 3, 0};
-            mask = new[]{2, 1, 3, 0};
+            mask = new[] {2, 1, 3, 0};
             Console.WriteLine("Mask: {0}", String.Join(", ", mask));
 
-            ApplyPermutation(array, mask);
-            Console.WriteLine("Permutaton: {0}", String.Join(", ", array));
+            bool isValid = ValidateMask(array.Length, mask);
+            if (!isValid) Console.WriteLine("The mask is not valid.");
+            else
+            {
+                ApplyPermutation(array, mask);
+                Console.WriteLine("Permutaton: {0}", String.Join(", ", array));
 
-            InvertMask(mask);
-            Console.WriteLine("Inverted Mask: {0}", String.Join(", ", mask));
+                InvertMask(mask);
+                Console.WriteLine("Inverted Mask: {0}", String.Join(", ", mask));
 
-            ApplyPermutation(array, mask);
-            Console.WriteLine("Inversion: {0}", String.Join(", ", array));
+                isValid = ValidateMask(array.Length, mask);
+                if (!isValid) Console.WriteLine("The inverted mask is not valid.");
+                else
+                {
+                    ApplyPermutation(array, mask);
+                    Console.WriteLine("Inversion: {0}", String.Join(", ", array));
+                } // End of inverted mask validation
+            } // End of original mask validation
 
             Console.WriteLine("Press enter to continue.");
             Console.ReadLine();
+        }
+
+        static bool ValidateMask(int n, int[] mask)
+        {
+            // The mask must account for all elements of the
+            // original array, not any more or less.
+            if (n != mask.Length) return false;
+
+            int[] copy = new int[n];
+            Array.Copy(mask, copy, n);
+            Array.Sort(copy);
+
+            // The values of the array should be all the indices too.
+            for (int i = 0; i < copy.Length; i++)
+            {
+                if (i != copy[i]) return false;
+            }
+
+            // If it passes the length and values validations, the permuation must be valid.
+            return true;
         }
 
         static void ApplyPermutation(char[] array, int[] mask)
